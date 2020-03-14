@@ -1971,50 +1971,53 @@ __webpack_require__.r(__webpack_exports__);
   name: "ShipComponent",
   data: function data() {
     return {
-      maxMoveRight: 0,
-      maxMoveLeft: 0,
-      maxMoveUp: 0,
-      maxMoveBottom: 0
+      gameAreaData: {
+        width: 0,
+        height: 0
+      },
+      playerData: {
+        width: 0,
+        height: 0,
+        maxMoveRight: 0,
+        maxMoveLeft: 0,
+        maxMoveUp: 0,
+        maxMoveBottom: 0
+      },
+      gameAreaElement: null,
+      playerElement: null
     };
   },
   mounted: function mounted() {
-    var positionInfo = this.gameArea.getBoundingClientRect();
-    var width = positionInfo.right - positionInfo.left;
-    var height = positionInfo.bottom - positionInfo.top;
-    console.log({
-      'area-width': width,
-      'area-height': height
-    });
-    var right = parseFloat(window.getComputedStyle(this.vessel).getPropertyValue('right'));
-    var left = parseFloat(window.getComputedStyle(this.vessel).getPropertyValue('left'));
-    var top = parseFloat(window.getComputedStyle(this.vessel).getPropertyValue('top'));
-    var bottom = parseFloat(window.getComputedStyle(this.vessel).getPropertyValue('bottom'));
-    console.log(right, left, top, bottom);
-    var vesselPositionInfo = this.vessel.getBoundingClientRect();
-    var vesselWidth = vesselPositionInfo.right - vesselPositionInfo.left;
-    var vesselHeight = vesselPositionInfo.bottom - vesselPositionInfo.top;
-    console.log(vesselWidth, vesselHeight);
-    this.maxMoveRight = width - left - vesselWidth;
-    this.maxMoveLeft = left;
-    this.maxMoveUp = top;
-    this.maxMoveDown = height - top - vesselHeight;
-    console.log({
-      'right': maxMoveRight,
-      'left': maxMoveLeft,
-      'up': maxMoveUp,
-      'down': maxMoveDown
-    });
-  },
-  computed: {
-    vessel: function vessel() {
-      return document.getElementById('ship');
-    },
-    gameArea: function gameArea() {
-      return document.getElementById('game-area');
-    }
+    this.gameAreaElement = document.getElementById('game-area');
+    this.playerElement = document.getElementById('ship');
+    this.getGameAreaPosition();
+    this.getPlayerPosition();
+    this.countMovement();
+    this.moveRight();
   },
   methods: {
-    moveRight: function moveRight() {}
+    getGameAreaPosition: function getGameAreaPosition() {
+      var positionInfo = this.gameAreaElement.getBoundingClientRect();
+      this.gameAreaData.width = positionInfo.right - positionInfo.left;
+      this.gameAreaData.height = positionInfo.bottom - positionInfo.top;
+    },
+    getPlayerPosition: function getPlayerPosition() {
+      var playerPositionInfo = this.playerElement.getBoundingClientRect();
+      this.playerData.width = playerPositionInfo.right - playerPositionInfo.left;
+      this.playerData.height = playerPositionInfo.bottom - playerPositionInfo.top;
+    },
+    countMovement: function countMovement() {
+      var left = parseFloat(window.getComputedStyle(this.playerElement).getPropertyValue('left'));
+      var top = parseFloat(window.getComputedStyle(this.playerElement).getPropertyValue('top'));
+      this.playerData.maxMoveRight = this.gameAreaData.width - left - this.playerData.width;
+      this.playerData.maxMoveLeft = left;
+      this.playerData.maxMoveUp = top;
+      this.playerData.maxMoveDown = this.gameAreaData.height - top - this.playerData.height;
+    },
+    moveRight: function moveRight() {
+      var left = window.getComputedStyle(this.playerElement).getPropertyValue('left');
+      this.playerElement.style.left = '200px';
+    }
   }
 });
 
@@ -6582,7 +6585,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n#ship[data-v-2c31222f] {\n    width: 20px;\n    height: 20px;\n    background-color: white;\n    position: absolute;\n    left: 30px;\n    top: 100px;\n}\n", ""]);
+exports.push([module.i, "\n#ship[data-v-2c31222f] {\n    width: 20px;\n    height: 20px;\n    background-color: white;\n    position: absolute;\n    left: 50px;\n    top: 100px;\n}\n", ""]);
 
 // exports
 
@@ -50566,15 +50569,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!********************************************************!*\
   !*** ./resources/js/components/game/ShipComponent.vue ***!
   \********************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ShipComponent_vue_vue_type_template_id_2c31222f_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ShipComponent.vue?vue&type=template&id=2c31222f&scoped=true& */ "./resources/js/components/game/ShipComponent.vue?vue&type=template&id=2c31222f&scoped=true&");
 /* harmony import */ var _ShipComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ShipComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/game/ShipComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _ShipComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _ShipComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _ShipComponent_vue_vue_type_style_index_0_id_2c31222f_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ShipComponent.vue?vue&type=style&index=0&id=2c31222f&scoped=true&lang=css& */ "./resources/js/components/game/ShipComponent.vue?vue&type=style&index=0&id=2c31222f&scoped=true&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ShipComponent_vue_vue_type_style_index_0_id_2c31222f_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ShipComponent.vue?vue&type=style&index=0&id=2c31222f&scoped=true&lang=css& */ "./resources/js/components/game/ShipComponent.vue?vue&type=style&index=0&id=2c31222f&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -50606,7 +50608,7 @@ component.options.__file = "resources/js/components/game/ShipComponent.vue"
 /*!*********************************************************************************!*\
   !*** ./resources/js/components/game/ShipComponent.vue?vue&type=script&lang=js& ***!
   \*********************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
