@@ -14,10 +14,6 @@
         name: "PlayerComponent",
         data() {
             return {
-                gameAreaData: {
-                  width: 0,
-                  height: 0
-                },
                 playerData: {
                     width: 0,
                     height: 0,
@@ -27,26 +23,29 @@
                     borderBottom: 0
                 },
                 step: 20,
-                gameAreaElement: null,
-                playerElement: null
+                playerElement: null,
             }
         },
         components:{
             Keypress: () => import('vue-keypress')
         },
+        props: {
+            gameAreaData: Object
+        },
         mounted() {
-            this.gameAreaElement = document.getElementById('game-area');
             this.playerElement = document.getElementById('player');
-            this.getGameAreaPosition();
-            this.getPlayerPosition();
-            this.countMovement();
+        },
+        watch: {
+            gameAreaData: {
+                handler() {
+                    this.getPlayerPosition();
+                    this.countMovement();
+                    this.emitPlayerData(800);
+                },
+                deep: true
+            }
         },
         methods: {
-            getGameAreaPosition() {
-                const positionInfo = this.gameAreaElement.getBoundingClientRect();
-                this.gameAreaData.width = positionInfo.right - positionInfo.left;
-                this.gameAreaData.height = positionInfo.bottom - positionInfo.top;
-            },
             getPlayerPosition() {
                 const playerPositionInfo = this.playerElement.getBoundingClientRect();
                 this.playerData.width = playerPositionInfo.right - playerPositionInfo.left;
@@ -92,8 +91,11 @@
                 this.playerElement.style.top = this.playerData.positionTop + 'px';
                 this.emitPlayerData();
             },
-            emitPlayerData() {
-                this.$emit('player', this.playerData);
+            emitPlayerData(time = 0) {
+                setTimeout(() => {
+                    this.$emit('player', this.playerData);
+                    }, time);
+
             }
         }
     }
