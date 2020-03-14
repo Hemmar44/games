@@ -21,7 +21,7 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('game-component', require('./components/game/GameComponent.vue').default);
-Vue.component('ship-component', require('./components/game/ShipComponent.vue').default);
+Vue.component('player-component', require('./components/game/PlayerComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

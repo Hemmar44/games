@@ -1,12 +1,24 @@
 <template>
     <div id="game-area">
-        <ship-component></ship-component>
+        <player-component @player="assignPlayerData"></player-component>
     </div>
 </template>
 
 <script>
+    import PlayerComponent from "./PlayerComponent";
     export default {
-        name: "GameComponent"
+        name: "GameComponent",
+        data() {
+            return {
+                playerData: {}
+            }
+        },
+        components: {PlayerComponent},
+        methods: {
+            assignPlayerData(value) {
+                Object.assign(this.playerData, value);
+            }
+        }
     }
 </script>
 
