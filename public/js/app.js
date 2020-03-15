@@ -2069,11 +2069,11 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       //TODO wyliczyć limit
-      howMany: 40,
+      howMany: 10,
       collectibles: [],
       width: 10,
       height: 10,
-      notToClose: 5
+      notToClose: 20
     };
   },
   props: {
@@ -2099,6 +2099,15 @@ __webpack_require__.r(__webpack_exports__);
 
         var element = {};
         element.id = "collectible_".concat(left, "_").concat(top);
+        element.touched = false;
+        element.raw = {
+          left: left,
+          top: top,
+          right: left + this.width,
+          bottom: top + this.height,
+          width: this.width,
+          height: this.height
+        };
         element.style = {
           left: left + 'px',
           top: top + 'px',
@@ -2122,7 +2131,7 @@ __webpack_require__.r(__webpack_exports__);
         var elementLeft = parseInt(element.left);
         var elementTop = parseInt(element.top);
 
-        if (left > elementLeft - _this.notToClose && left < elementLeft + _this.notToClose * 2 || top > elementTop - _this.notToClose && top < elementTop + _this.notToClose * 2) {
+        if (left > elementLeft - _this.notToClose && left < elementLeft + _this.notToClose * 2 && top > elementTop - _this.notToClose && top < elementTop + _this.notToClose * 2) {
           check = true;
         }
       });
@@ -2163,6 +2172,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "GameComponent",
@@ -2173,6 +2185,9 @@ __webpack_require__.r(__webpack_exports__);
       gameAreaData: {
         width: 0,
         height: 0
+      },
+      gameData: {
+        points: 0
       }
     };
   },
@@ -2185,17 +2200,43 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     assignPlayerData: function assignPlayerData(player) {
-      console.log('oooooo');
       Object.assign(this.playerData, player);
+      this.performPlayerMove();
     },
     assignCollectiblesData: function assignCollectiblesData(collectibles) {
-      console.log('dddaaa');
       this.collectibles = collectibles;
     },
     getGameAreaPosition: function getGameAreaPosition() {
       var positionInfo = this.gameAreaElement.getBoundingClientRect();
       this.gameAreaData.width = positionInfo.right - positionInfo.left;
       this.gameAreaData.height = positionInfo.bottom - positionInfo.top;
+    },
+    performPlayerMove: function performPlayerMove() {
+      var _this = this;
+
+      if (this.collectibles.length > 0) {
+        this.collectibles.forEach(function (collectible) {
+          var positions = collectible.raw;
+
+          if (_this.touched(positions, collectible.touched)) {
+            collectible.touched = true;
+            _this.gameData.points += 1;
+            document.getElementById(collectible.id).style.display = "none";
+          }
+        });
+      }
+    },
+    touched: function touched(positions, _touched) {
+      return this.horizontal(positions) && this.vertical(positions) && !_touched;
+    },
+    horizontal: function horizontal(positions) {
+      return this.between(positions.left, this.playerData.positionLeft, this.playerData.positionRight) || this.between(positions.right, this.playerData.positionLeft, this.playerData.positionRight);
+    },
+    vertical: function vertical(positions) {
+      return this.between(positions.top, this.playerData.positionTop, this.playerData.positionBottom) || this.between(positions.bottom, this.playerData.positionTop, this.playerData.positionBottom);
+    },
+    between: function between(number, min, max) {
+      return number > min && number < max;
     }
   }
 });
@@ -2230,9 +2271,11 @@ __webpack_require__.r(__webpack_exports__);
         width: 0,
         height: 0,
         borderRight: 0,
+        borderBottom: 0,
         positionLeft: 0,
         positionTop: 0,
-        borderBottom: 0
+        positionRight: 0,
+        positionBottom: 0
       },
       step: 20,
       playerElement: null
@@ -2271,10 +2314,13 @@ __webpack_require__.r(__webpack_exports__);
       this.playerData.borderRight = this.gameAreaData.width - this.playerData.width;
       this.playerData.positionLeft = left;
       this.playerData.positionTop = top;
+      this.playerData.positionRight = this.playerData.positionLeft + this.playerData.width;
+      this.playerData.positionBottom = this.playerData.positionTop + this.playerData.height;
       this.playerData.borderBottom = this.gameAreaData.height - this.playerData.height;
     },
     moveRight: function moveRight() {
       this.playerData.positionLeft += this.step;
+      this.playerData.positionRight = this.playerData.positionLeft + this.playerData.width;
 
       if (this.playerData.positionLeft >= this.playerData.borderRight) {
         this.playerData.positionLeft = this.playerData.borderRight;
@@ -2285,6 +2331,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     moveLeft: function moveLeft() {
       this.playerData.positionLeft -= this.step;
+      this.playerData.positionRight = this.playerData.positionLeft + this.playerData.width;
 
       if (this.playerData.positionLeft <= 0) {
         this.playerData.positionLeft = 0;
@@ -2295,6 +2342,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     moveUp: function moveUp() {
       this.playerData.positionTop -= this.step;
+      this.playerData.positionBottom = this.playerData.positionTop + this.playerData.height;
 
       if (this.playerData.positionTop <= 0) {
         this.playerData.positionTop = 0;
@@ -2305,6 +2353,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     moveDown: function moveDown() {
       this.playerData.positionTop += this.step;
+      this.playerData.positionBottom = this.playerData.positionTop + this.playerData.height;
 
       if (this.playerData.positionTop >= this.playerData.borderBottom) {
         this.playerData.positionTop = this.playerData.borderBottom;
@@ -38522,22 +38571,25 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { attrs: { id: "game-area" } },
-    [
-      _c("player-component", {
-        attrs: { "game-area-data": _vm.gameAreaData },
-        on: { player: _vm.assignPlayerData }
-      }),
-      _vm._v(" "),
-      _c("collectible-component", {
-        attrs: { "game-area-data": _vm.gameAreaData },
-        on: { collectibles: _vm.assignCollectiblesData }
-      })
-    ],
-    1
-  )
+  return _c("div", [
+    _vm._v("\n    " + _vm._s(_vm.gameData.points) + "\n    "),
+    _c(
+      "div",
+      { attrs: { id: "game-area" } },
+      [
+        _c("player-component", {
+          attrs: { "game-area-data": _vm.gameAreaData },
+          on: { player: _vm.assignPlayerData }
+        }),
+        _vm._v(" "),
+        _c("collectible-component", {
+          attrs: { "game-area-data": _vm.gameAreaData },
+          on: { collectibles: _vm.assignCollectiblesData }
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

@@ -18,9 +18,11 @@
                     width: 0,
                     height: 0,
                     borderRight: 0,
+                    borderBottom: 0,
                     positionLeft: 0,
                     positionTop: 0,
-                    borderBottom: 0
+                    positionRight: 0,
+                    positionBottom: 0,
                 },
                 step: 20,
                 playerElement: null,
@@ -57,10 +59,13 @@
                 this.playerData.borderRight = this.gameAreaData.width - this.playerData.width;
                 this.playerData.positionLeft = left;
                 this.playerData.positionTop = top;
+                this.playerData.positionRight = this.playerData.positionLeft + this.playerData.width;
+                this.playerData.positionBottom = this.playerData.positionTop + this.playerData.height;
                 this.playerData.borderBottom = this.gameAreaData.height - this.playerData.height;
             },
             moveRight() {
                 this.playerData.positionLeft += this.step;
+                this.playerData.positionRight = this.playerData.positionLeft + this.playerData.width;
                 if (this.playerData.positionLeft >= this.playerData.borderRight) {
                     this.playerData.positionLeft = this.playerData.borderRight;
                 }
@@ -69,6 +74,7 @@
             },
             moveLeft() {
                 this.playerData.positionLeft -= this.step;
+                this.playerData.positionRight = this.playerData.positionLeft + this.playerData.width;
                 if (this.playerData.positionLeft <= 0) {
                     this.playerData.positionLeft = 0;
                 }
@@ -77,6 +83,7 @@
             },
             moveUp() {
                 this.playerData.positionTop -= this.step;
+                this.playerData.positionBottom = this.playerData.positionTop + this.playerData.height;
                 if (this.playerData.positionTop <= 0) {
                     this.playerData.positionTop = 0;
                 }
@@ -85,6 +92,7 @@
             },
             moveDown() {
                 this.playerData.positionTop += this.step;
+                this.playerData.positionBottom = this.playerData.positionTop + this.playerData.height;
                 if (this.playerData.positionTop >= this.playerData.borderBottom) {
                     this.playerData.positionTop = this.playerData.borderBottom;
                 }

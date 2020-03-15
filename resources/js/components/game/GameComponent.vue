@@ -1,13 +1,16 @@
 <template>
-    <div id="game-area">
-        <player-component
-            :game-area-data="gameAreaData"
-            @player="assignPlayerData"
-        ></player-component>
-        <collectible-component
-            :game-area-data="gameAreaData"
-            @collectibles="assignCollectiblesData"
-        ></collectible-component>
+    <div>
+        {{gameData.points}}
+        <div id="game-area">
+            <player-component
+                :game-area-data="gameAreaData"
+                @player="assignPlayerData"
+            ></player-component>
+            <collectible-component
+                :game-area-data="gameAreaData"
+                @collectibles="assignCollectiblesData"
+            ></collectible-component>
+        </div>
     </div>
 </template>
 
@@ -22,6 +25,9 @@
                 gameAreaData: {
                     width: 0,
                     height: 0
+                },
+                gameData: {
+                    points: 0
                 }
             }
         },
@@ -32,11 +38,10 @@
         components: {PlayerComponent},
         methods: {
             assignPlayerData(player) {
-                console.log('oooooo');
                 Object.assign(this.playerData, player);
+                this.performPlayerMove();
             },
             assignCollectiblesData(collectibles) {
-                console.log('dddaaa');
                 this.collectibles = collectibles;
             },
             getGameAreaPosition() {
@@ -44,6 +49,32 @@
                 this.gameAreaData.width = positionInfo.right - positionInfo.left;
                 this.gameAreaData.height = positionInfo.bottom - positionInfo.top;
             },
+            performPlayerMove() {
+                if (this.collectibles.length > 0) {
+                    this.collectibles.forEach((collectible) => {
+                        const positions = collectible.raw;
+                        if (this.touched(positions, collectible.touched)) {
+                            collectible.touched = true;
+                            this.gameData.points += 1;
+                            document.getElementById(collectible.id).style.display = "none";
+                        }
+                    });
+                }
+            },
+            touched(positions, touched) {
+                return this.horizontal(positions) && this.vertical(positions) && !touched;
+            },
+            horizontal(positions) {
+                return this.between(positions.left, this.playerData.positionLeft, this.playerData.positionRight)
+                    || this.between(positions.right, this.playerData.positionLeft, this.playerData.positionRight);
+            },
+            vertical(positions) {
+                return this.between(positions.top, this.playerData.positionTop, this.playerData.positionBottom)
+                    || this.between(positions.bottom, this.playerData.positionTop, this.playerData.positionBottom);
+            },
+            between(number, min, max) {
+                return (number > min) && (number < max);
+            }
         }
     }
 </script>

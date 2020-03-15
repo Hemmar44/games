@@ -12,11 +12,11 @@
         data() {
             return {
                 //TODO wyliczyć limit
-                howMany: 40,
+                howMany: 10,
                 collectibles: [],
                 width: 10,
                 height: 10,
-                notToClose: 5
+                notToClose: 20
             }
         },
         props: {
@@ -40,6 +40,15 @@
                     }
                     let element = {};
                     element.id = `collectible_${left}_${top}`;
+                    element.touched = false;
+                    element.raw = {
+                        left: left,
+                        top: top,
+                        right: left + this.width,
+                        bottom: top + this.height,
+                        width: this.width,
+                        height: this.height
+                    };
                     element.style = {
                         left: left + 'px',
                         top: top + 'px',
@@ -58,7 +67,7 @@
                 this.collectibles.forEach(element => {
                     const elementLeft = parseInt(element.left);
                     const elementTop = parseInt(element.top);
-                    if (left > (elementLeft - this.notToClose) && left < (elementLeft + this.notToClose * 2) ||
+                    if (left > (elementLeft - this.notToClose) && left < (elementLeft + this.notToClose * 2) &&
                         top > (elementTop - this.notToClose) && top < (elementTop + this.notToClose * 2)
                     ) {
                         check = true;
