@@ -52,14 +52,19 @@
             performPlayerMove() {
                 if (this.collectibles.length > 0) {
                     this.collectibles.forEach((collectible) => {
-                        const positions = collectible.raw;
-                        if (this.touched(positions, collectible.touched)) {
+                        if (this.touched(collectible.raw, collectible.touched)) {
                             collectible.touched = true;
-                            this.gameData.points += 1;
+                            this.gameData.points += collectible.points;
                             document.getElementById(collectible.id).style.display = "none";
                         }
                     });
+                    if (this.isThisTheEnd(this.collectibles)) {
+                        alert('koniec');
+                    }
                 }
+            },
+            isThisTheEnd(collectibles) {
+                return collectibles.filter(collectible => !collectible.touched).length === 0;
             },
             touched(positions, touched) {
                 return this.horizontal(positions) && this.vertical(positions) && !touched;

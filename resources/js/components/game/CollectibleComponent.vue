@@ -7,16 +7,41 @@
 </template>
 
 <script>
+    const HOW_MANY = 10;
+    const GEMS = [
+        {
+            'background-color': 'gold',
+            quantity: Math.floor(HOW_MANY / HOW_MANY),
+            points: 10
+        },
+        {
+            'background-color': 'red',
+            quantity: Math.floor(HOW_MANY / 2),
+            points: 2
+        },
+        {
+            'background-color': 'blue',
+            quantity: Math.floor(HOW_MANY / 4),
+            points: 5
+        },
+        {
+            'background-color': 'green',
+            quantity: HOW_MANY, //'rest'
+            points: 1
+        }
+
+    ];
     export default {
         name: "CollectibleComponent",
         data() {
             return {
                 //TODO wyliczyć limit
-                howMany: 10,
+                howMany: HOW_MANY,
                 collectibles: [],
                 width: 10,
                 height: 10,
-                notToClose: 20
+                notToClose: 20,
+                gems: GEMS
             }
         },
         props: {
@@ -53,11 +78,25 @@
                         left: left + 'px',
                         top: top + 'px',
                         width: this.width + 'px',
-                        height: this.height + 'px'
-                    };
+                        height: this.height + 'px',
+                };
                     this.collectibles.push(element);
                 }
+                this.createGems();
                 this.emitCollectibleData();
+            },
+            createGems() {
+                let counter = 0;
+                this.gems.forEach((gem) => {
+                    counter += gem.quantity;
+                    this.collectibles.forEach((collectible, index) => {
+                        if ((index + 1) <= counter && !collectible.changed) {
+                            collectible.changed = true;
+                            collectible.points = gem.points;
+                            collectible.style['background-color'] = gem['background-color'];
+                        }
+                    });
+                });
             },
             wrongPositions(left, top) {
                 if (left < 0 || top < 0) {
@@ -86,7 +125,6 @@
 
 <style scoped>
     .collectibles {
-        background-color: red;
         position: absolute;
     }
 </style>

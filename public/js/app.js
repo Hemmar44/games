@@ -2064,16 +2064,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+var HOW_MANY = 10;
+var GEMS = [{
+  'background-color': 'gold',
+  quantity: Math.floor(HOW_MANY / HOW_MANY),
+  points: 10
+}, {
+  'background-color': 'red',
+  quantity: Math.floor(HOW_MANY / 2),
+  points: 2
+}, {
+  'background-color': 'blue',
+  quantity: Math.floor(HOW_MANY / 4),
+  points: 5
+}, {
+  'background-color': 'green',
+  quantity: HOW_MANY,
+  //'rest'
+  points: 1
+}];
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CollectibleComponent",
   data: function data() {
     return {
       //TODO wyliczyć limit
-      howMany: 10,
+      howMany: HOW_MANY,
       collectibles: [],
       width: 10,
       height: 10,
-      notToClose: 20
+      notToClose: 20,
+      gems: GEMS
     };
   },
   props: {
@@ -2117,10 +2137,27 @@ __webpack_require__.r(__webpack_exports__);
         this.collectibles.push(element);
       }
 
+      this.createGems();
       this.emitCollectibleData();
     },
-    wrongPositions: function wrongPositions(left, top) {
+    createGems: function createGems() {
       var _this = this;
+
+      var counter = 0;
+      this.gems.forEach(function (gem) {
+        counter += gem.quantity;
+
+        _this.collectibles.forEach(function (collectible, index) {
+          if (index + 1 <= counter && !collectible.changed) {
+            collectible.changed = true;
+            collectible.points = gem.points;
+            collectible.style['background-color'] = gem['background-color'];
+          }
+        });
+      });
+    },
+    wrongPositions: function wrongPositions(left, top) {
+      var _this2 = this;
 
       if (left < 0 || top < 0) {
         return true;
@@ -2131,17 +2168,17 @@ __webpack_require__.r(__webpack_exports__);
         var elementLeft = parseInt(element.left);
         var elementTop = parseInt(element.top);
 
-        if (left > elementLeft - _this.notToClose && left < elementLeft + _this.notToClose * 2 && top > elementTop - _this.notToClose && top < elementTop + _this.notToClose * 2) {
+        if (left > elementLeft - _this2.notToClose && left < elementLeft + _this2.notToClose * 2 && top > elementTop - _this2.notToClose && top < elementTop + _this2.notToClose * 2) {
           check = true;
         }
       });
       return check;
     },
     emitCollectibleData: function emitCollectibleData() {
-      var _this2 = this;
+      var _this3 = this;
 
       setTimeout(function () {
-        _this2.$emit('collectibles', _this2.collectibles);
+        _this3.$emit('collectibles', _this3.collectibles);
       }, 800);
     }
   }
@@ -2216,15 +2253,22 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.collectibles.length > 0) {
         this.collectibles.forEach(function (collectible) {
-          var positions = collectible.raw;
-
-          if (_this.touched(positions, collectible.touched)) {
+          if (_this.touched(collectible.raw, collectible.touched)) {
             collectible.touched = true;
-            _this.gameData.points += 1;
+            _this.gameData.points += collectible.points;
             document.getElementById(collectible.id).style.display = "none";
           }
         });
+
+        if (this.isThisTheEnd(this.collectibles)) {
+          alert('koniec');
+        }
       }
+    },
+    isThisTheEnd: function isThisTheEnd(collectibles) {
+      return collectibles.filter(function (collectible) {
+        return !collectible.touched;
+      }).length === 0;
     },
     touched: function touched(positions, _touched) {
       return this.horizontal(positions) && this.vertical(positions) && !_touched;
@@ -6918,7 +6962,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.collectibles[data-v-328f2b43] {\n    background-color: red;\n    position: absolute;\n}\n", ""]);
+exports.push([module.i, "\n.collectibles[data-v-328f2b43] {\n    position: absolute;\n}\n", ""]);
 
 // exports
 
