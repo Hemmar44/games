@@ -64,7 +64,7 @@
                 }
             },
             isThisTheEnd(collectibles) {
-                return collectibles.filter(collectible => !collectible.touched).length === 0;
+                return collectibles.filter(collectible => !collectible.touched && collectible.proper).length === 0;
             },
             touched(positions, touched) {
                 return this.horizontal(positions) && this.vertical(positions) && !touched;
