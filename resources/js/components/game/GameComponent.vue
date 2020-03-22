@@ -27,7 +27,8 @@
                     height: 0
                 },
                 gameData: {
-                    points: 0
+                    points: 0,
+                    maxPoints: 0
                 }
             }
         },
@@ -43,6 +44,16 @@
             },
             assignCollectiblesData(collectibles) {
                 this.collectibles = collectibles;
+                this.makeThemDisappear();
+            },
+            makeThemDisappear() {
+                if (this.collectibles.length) {
+                    this.collectibles.forEach(collectible => {
+                        console.log(collectible);
+                        let element = document.getElementById(collectible.id);
+                        setTimeout(() => {element.classList.add("appear")}, 1500);
+                    })
+                }
             },
             getGameAreaPosition() {
                 const positionInfo = this.gameAreaElement.getBoundingClientRect();
@@ -92,4 +103,5 @@
         height: 500px;
         position: relative;
     }
+
 </style>

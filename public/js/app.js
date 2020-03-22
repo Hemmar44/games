@@ -2069,29 +2069,32 @@ var GEMS = [{
   'background-color': 'gold',
   quantity: Math.floor(HOW_MANY / HOW_MANY),
   points: 10,
-  proper: true
+  proper: true,
+  time: '3s'
 }, {
   'background-color': 'red',
   quantity: Math.floor(HOW_MANY / 2),
   points: -5,
-  proper: false
+  proper: false,
+  time: '3s'
 }, {
   'background-color': 'blue',
   quantity: Math.floor(HOW_MANY / 4),
   points: 5,
-  proper: true
+  proper: true,
+  time: '3s'
 }, {
   'background-color': 'green',
   quantity: HOW_MANY,
   //'rest'
   points: 1,
-  proper: false
+  proper: true,
+  time: '3s'
 }];
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CollectibleComponent",
   data: function data() {
     return {
-      //TODO wyliczyć limit
       howMany: HOW_MANY,
       collectibles: [],
       width: 10,
@@ -2229,7 +2232,8 @@ __webpack_require__.r(__webpack_exports__);
         height: 0
       },
       gameData: {
-        points: 0
+        points: 0,
+        maxPoints: 0
       }
     };
   },
@@ -2247,6 +2251,18 @@ __webpack_require__.r(__webpack_exports__);
     },
     assignCollectiblesData: function assignCollectiblesData(collectibles) {
       this.collectibles = collectibles;
+      this.makeThemDisappear();
+    },
+    makeThemDisappear: function makeThemDisappear() {
+      if (this.collectibles.length) {
+        this.collectibles.forEach(function (collectible) {
+          console.log(collectible);
+          var element = document.getElementById(collectible.id);
+          setTimeout(function () {
+            element.classList.add("appear");
+          }, 1500);
+        });
+      }
     },
     getGameAreaPosition: function getGameAreaPosition() {
       var positionInfo = this.gameAreaElement.getBoundingClientRect();
@@ -6967,7 +6983,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.collectibles[data-v-328f2b43] {\n    position: absolute;\n}\n", ""]);
+exports.push([module.i, "\n.collectibles[data-v-328f2b43] {\n    position: absolute;\n    opacity: 1;\n}\n.disappear[data-v-328f2b43] {\n    opacity: 0;\n    transition: opacity 5s;\n}\n.appear[data-v-328f2b43] {\n    opacity: 1;\n}\n", ""]);
 
 // exports
 
@@ -6986,7 +7002,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n#game-area[data-v-27b8af8e] {\n    background-color: black;\n    width: 80%;\n    margin: 0 auto;\n    height: 500px;\n    position: relative;\n}\n", ""]);
+exports.push([module.i, "\n#game-area[data-v-27b8af8e] {\n    background-color: black;\n    width: 80%;\n    margin: 0 auto;\n    height: 500px;\n    position: relative;\n}\n\n", ""]);
 
 // exports
 
@@ -38589,7 +38605,7 @@ var render = function() {
     _vm._l(_vm.collectibles, function(element) {
       return _c("div", [
         _c("div", {
-          staticClass: "collectibles",
+          staticClass: "collectibles disappear",
           style: element.style,
           attrs: { id: element.id }
         })

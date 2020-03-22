@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-for="element in collectibles">
-            <div class="collectibles" :style="element.style" :id="element.id"></div>
+            <div class="collectibles disappear" :style="element.style" :id="element.id"></div>
         </div>
     </div>
 </template>
@@ -13,25 +13,29 @@
             'background-color': 'gold',
             quantity: Math.floor(HOW_MANY / HOW_MANY),
             points: 10,
-            proper: true
+            proper: true,
+            time: '3s'
         },
         {
             'background-color': 'red',
             quantity: Math.floor(HOW_MANY / 2),
             points: -5,
-            proper: false
+            proper: false,
+            time: '3s'
         },
         {
             'background-color': 'blue',
             quantity: Math.floor(HOW_MANY / 4),
             points: 5,
             proper: true,
+            time: '3s'
         },
         {
             'background-color': 'green',
             quantity: HOW_MANY, //'rest'
             points: 1,
-            proper: false
+            proper: true,
+            time: '3s'
         }
 
     ];
@@ -39,7 +43,6 @@
         name: "CollectibleComponent",
         data() {
             return {
-                //TODO wyliczyć limit
                 howMany: HOW_MANY,
                 collectibles: [],
                 width: 10,
@@ -131,5 +134,13 @@
 <style scoped>
     .collectibles {
         position: absolute;
+        opacity: 1;
+    }
+    .disappear {
+        opacity: 0;
+        transition: opacity 5s;
+    }
+    .appear {
+        opacity: 1;
     }
 </style>
