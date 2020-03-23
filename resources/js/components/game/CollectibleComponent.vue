@@ -7,35 +7,31 @@
 </template>
 
 <script>
-    const HOW_MANY = 10;
+    const HOW_MANY = 20;
     const GEMS = [
         {
             'background-color': 'gold',
             quantity: Math.floor(HOW_MANY / HOW_MANY),
             points: 10,
             proper: true,
-            time: '3s'
         },
         {
             'background-color': 'red',
             quantity: Math.floor(HOW_MANY / 2),
             points: -5,
             proper: false,
-            time: '3s'
         },
         {
             'background-color': 'blue',
             quantity: Math.floor(HOW_MANY / 4),
             points: 5,
             proper: true,
-            time: '3s'
         },
         {
             'background-color': 'green',
             quantity: HOW_MANY, //'rest'
             points: 1,
             proper: true,
-            time: '3s'
         }
 
     ];
@@ -101,6 +97,7 @@
                             collectible.changed = true;
                             collectible.points = gem.points;
                             collectible.proper = gem.proper;
+                            collectible.class = 'appear';
                             collectible.style['background-color'] = gem['background-color'];
                         }
                     });
@@ -138,9 +135,10 @@
     }
     .disappear {
         opacity: 0;
-        transition: opacity 5s;
+        transition: opacity 2s;
     }
     .appear {
         opacity: 1;
+        transition: opacity 2s;
     }
 </style>

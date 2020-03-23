@@ -2064,32 +2064,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-var HOW_MANY = 10;
+var HOW_MANY = 20;
 var GEMS = [{
   'background-color': 'gold',
   quantity: Math.floor(HOW_MANY / HOW_MANY),
   points: 10,
-  proper: true,
-  time: '3s'
+  proper: true
 }, {
   'background-color': 'red',
   quantity: Math.floor(HOW_MANY / 2),
   points: -5,
-  proper: false,
-  time: '3s'
+  proper: false
 }, {
   'background-color': 'blue',
   quantity: Math.floor(HOW_MANY / 4),
   points: 5,
-  proper: true,
-  time: '3s'
+  proper: true
 }, {
   'background-color': 'green',
   quantity: HOW_MANY,
   //'rest'
   points: 1,
-  proper: true,
-  time: '3s'
+  proper: true
 }];
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CollectibleComponent",
@@ -2159,6 +2155,7 @@ var GEMS = [{
             collectible.changed = true;
             collectible.points = gem.points;
             collectible.proper = gem.proper;
+            collectible["class"] = 'appear';
             collectible.style['background-color'] = gem['background-color'];
           }
         });
@@ -2220,6 +2217,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+var INTERVAL = 10000;
+var MINIMUM_OPACITY = 0.2;
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "GameComponent",
@@ -2256,11 +2255,14 @@ __webpack_require__.r(__webpack_exports__);
     makeThemDisappear: function makeThemDisappear() {
       if (this.collectibles.length) {
         this.collectibles.forEach(function (collectible) {
-          console.log(collectible);
           var element = document.getElementById(collectible.id);
-          setTimeout(function () {
-            element.classList.add("appear");
-          }, 1500);
+          setInterval(function () {
+            var add = collectible["class"] === 'appear' ? 'appear' : 'disappear';
+            var remove = add === 'appear' ? 'disappear' : 'appear';
+            collectible["class"] = remove;
+            element.classList.add(add);
+            element.classList.remove(remove);
+          }, Math.random() * INTERVAL);
         });
       }
     },
@@ -2274,10 +2276,12 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.collectibles.length > 0) {
         this.collectibles.forEach(function (collectible) {
-          if (_this.touched(collectible.raw, collectible.touched)) {
+          var element = document.getElementById(collectible.id);
+
+          if (_this.touched(collectible, element)) {
             collectible.touched = true;
             _this.gameData.points += collectible.points;
-            document.getElementById(collectible.id).style.display = "none";
+            element.style.display = "none";
           }
         });
 
@@ -2291,8 +2295,9 @@ __webpack_require__.r(__webpack_exports__);
         return !collectible.touched && collectible.proper;
       }).length === 0;
     },
-    touched: function touched(positions, _touched) {
-      return this.horizontal(positions) && this.vertical(positions) && !_touched;
+    touched: function touched(collectible, element) {
+      var opacity = window.getComputedStyle(element).getPropertyValue("opacity");
+      return opacity > MINIMUM_OPACITY && this.horizontal(collectible.raw) && this.vertical(collectible.raw) && !collectible.touched;
     },
     horizontal: function horizontal(positions) {
       return this.between(positions.left, this.playerData.positionLeft, this.playerData.positionRight) || this.between(positions.right, this.playerData.positionLeft, this.playerData.positionRight);
@@ -6983,7 +6988,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.collectibles[data-v-328f2b43] {\n    position: absolute;\n    opacity: 1;\n}\n.disappear[data-v-328f2b43] {\n    opacity: 0;\n    transition: opacity 5s;\n}\n.appear[data-v-328f2b43] {\n    opacity: 1;\n}\n", ""]);
+exports.push([module.i, "\n.collectibles[data-v-328f2b43] {\n    position: absolute;\n    opacity: 1;\n}\n.disappear[data-v-328f2b43] {\n    opacity: 0;\n    transition: opacity 2s;\n}\n.appear[data-v-328f2b43] {\n    opacity: 1;\n    transition: opacity 2s;\n}\n", ""]);
 
 // exports
 

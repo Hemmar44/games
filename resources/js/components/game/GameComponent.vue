@@ -15,6 +15,9 @@
 </template>
 
 <script>
+    const INTERVAL = 10000;
+    const MINIMUM_OPACITY = 0.2;
+
     import PlayerComponent from "./PlayerComponent";
     export default {
         name: "GameComponent",
@@ -49,9 +52,14 @@
             makeThemDisappear() {
                 if (this.collectibles.length) {
                     this.collectibles.forEach(collectible => {
-                        console.log(collectible);
                         let element = document.getElementById(collectible.id);
-                        setTimeout(() => {element.classList.add("appear")}, 1500);
+                        setInterval(() => {
+                            let add = collectible.class === 'appear' ? 'appear' : 'disappear';
+                            let remove = add === 'appear' ? 'disappear' : 'appear';
+                            collectible.class = remove;
+                            element.classList.add(add);
+                            element.classList.remove(remove);
+                        }, Math.random() * INTERVAL);
                     })
                 }
             },
@@ -63,10 +71,11 @@
             performPlayerMove() {
                 if (this.collectibles.length > 0) {
                     this.collectibles.forEach((collectible) => {
-                        if (this.touched(collectible.raw, collectible.touched)) {
+                        const element = document.getElementById(collectible.id);
+                        if (this.touched(collectible, element)) {
                             collectible.touched = true;
                             this.gameData.points += collectible.points;
-                            document.getElementById(collectible.id).style.display = "none";
+                            element.style.display = "none";
                         }
                     });
                     if (this.isThisTheEnd(this.collectibles)) {
@@ -77,8 +86,12 @@
             isThisTheEnd(collectibles) {
                 return collectibles.filter(collectible => !collectible.touched && collectible.proper).length === 0;
             },
-            touched(positions, touched) {
-                return this.horizontal(positions) && this.vertical(positions) && !touched;
+            touched(collectible, element) {
+                const opacity = window.getComputedStyle(element).getPropertyValue("opacity");
+                return opacity > MINIMUM_OPACITY
+                    && this.horizontal(collectible.raw)
+                    && this.vertical(collectible.raw)
+                    && !collectible.touched;
             },
             horizontal(positions) {
                 return this.between(positions.left, this.playerData.positionLeft, this.playerData.positionRight)
